@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+       default-lazy-init="true">
+
+    <bean id="proxyDataSource" class="org.jdbcdslog.ConnectionPoolDataSourceProxy">
+        <property name="targetDSDirect" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置数据源，从上面配置文件读取 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <!-- 初始化连接数 -->
+        <property name="initialSize" value="${jdbc.initialSize}" />
+        <!-- 空闲连接数 -->
+        <property name="minIdle" value="${jdbc.minIdle}" />
+        <property name="maxIdle" value="${jdbc.maxIdle}" />
+        <!-- 最大连接数 -->
+        <property name="maxActive" value="${jdbc.maxActive}" />
+        <property name="maxWait" value="${jdbc.maxWait}" />
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow}" />
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}" />
+        <property name="numTestsPerEvictionRun" value="${jdbc.numTestsPerEvictionRun}" />
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}" />
+        <!--<property name="defaultAutoCommit" value="false"/>-->
+    </bean>
+
+
+</beans>

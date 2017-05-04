@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+       xmlns:task="http://www.springframework.org/schema/task"
+       default-lazy-init="true">
+       <!-- 使用annotation 自动注册bean,并保证@Required,@Autowired的属性被注入 -->
+
+       <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
+       <task:scheduler id="qbScheduler" pool-size="10"/>
+
+       <aop:aspectj-autoproxy/>
+       <bean id="secureRandomNumberGenerate" class="org.apache.shiro.crypto.SecureRandomNumberGenerator">
+              <property name="defaultNextBytesSize" value="5"/>
+       </bean>
+
+       <bean id="applicationContextUtil" class="com.mengyan.xin.manage.utils.ApplicationContextUtil" lazy-init="false"/>
+
+       <import resource="spring-context.xml"/>
+       <import resource="spring-datasource.xml"/>
+       <import resource="spring-transaction.xml"/>
+       <import resource="spring-myabatis.xml"/>
+       <import resource="spring-shiro.xml"/>
+</beans>

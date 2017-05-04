@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mengyan.xin.dal.mapper.user.UserLoginDOMapper" >
+  <resultMap id="BaseResultMap" type="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="user_salt" property="userSalt" jdbcType="VARCHAR" />
+    <result column="user_login_time" property="userLoginTime" jdbcType="TIMESTAMP" />
+    <result column="user_status" property="userStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_login
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    insert into user_login (id, user_id, user_name, 
+      user_password, user_salt, user_login_time, 
+      user_status)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{userPassword,jdbcType=VARCHAR}, #{userSalt,jdbcType=VARCHAR}, #{userLoginTime,jdbcType=TIMESTAMP}, 
+      #{userStatus,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    update user_login
+    set user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      user_salt = #{userSalt,jdbcType=VARCHAR},
+      user_login_time = #{userLoginTime,jdbcType=TIMESTAMP},
+      user_status = #{userStatus,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+  </select>
+  <delete id="delete" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    delete from user_login
+    <trim prefix="WHERE" prefixOverrides="AND | OR" >
+      <if test="id != null" >
+        AND id=#{id,jdbcType=INTEGER}
+      </if>
+      <if test="userId != null" >
+        AND user_id=#{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="userName != null" >
+        AND user_name=#{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="userPassword != null" >
+        AND user_password=#{userPassword,jdbcType=VARCHAR}
+      </if>
+      <if test="userSalt != null" >
+        AND user_salt=#{userSalt,jdbcType=VARCHAR}
+      </if>
+      <if test="userLoginTime != null" >
+        AND user_login_time=#{userLoginTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="userStatus != null" >
+        AND user_status=#{userStatus,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and userId == null and userName == null and userPassword == null and userSalt == null and userLoginTime == null and userStatus == null" >
+        AND 1=0
+      </if>
+    </trim>
+  </delete>
+  <select id="select" resultMap="BaseResultMap" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+    <trim prefix="WHERE" prefixOverrides="AND" >
+      <if test="param1.id != null" >
+        AND id=#{param1.id,jdbcType=INTEGER}
+      </if>
+      <if test="param1.userId != null" >
+        AND user_id=#{param1.userId,jdbcType=VARCHAR}
+      </if>
+      <if test="param1.userName != null" >
+        AND user_name=#{param1.userName,jdbcType=VARCHAR}
+      </if>
+      <if test="param1.userPassword != null" >
+        AND user_password=#{param1.userPassword,jdbcType=VARCHAR}
+      </if>
+      <if test="param1.userSalt != null" >
+        AND user_salt=#{param1.userSalt,jdbcType=VARCHAR}
+      </if>
+      <if test="param1.userLoginTime != null" >
+        AND user_login_time=#{param1.userLoginTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="param1.userStatus != null" >
+        AND user_status=#{param1.userStatus,jdbcType=INTEGER}
+      </if>
+      <if test="param1.id == null and param1.userId == null and param1.userName == null and param1.userPassword == null and param1.userSalt == null and param1.userLoginTime == null and param1.userStatus == null" >
+        AND 1=0
+      </if>
+    </trim>
+    <if test="null != param2.offset and 0 != param2.offset" >
+      limit #{param2.index,jdbcType=INTEGER},#{param2.offset,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectBySearchKeyOr" resultMap="BaseResultMap" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+    <trim prefix="WHERE" prefixOverrides="OR" >
+      <if test="param1.id != null and param1.id != ''" >
+        OR id= #{param1.id,jdbcType=INTEGER}
+      </if>
+      <if test="param1.userId != null and param1.userId != ''" >
+         OR user_id like concat(concat('%',#{param1.userId,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userName != null and param1.userName != ''" >
+         OR user_name like concat(concat('%',#{param1.userName,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userPassword != null and param1.userPassword != ''" >
+         OR user_password like concat(concat('%',#{param1.userPassword,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userSalt != null and param1.userSalt != ''" >
+         OR user_salt like concat(concat('%',#{param1.userSalt,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userLoginTime != null and param1.userLoginTime != ''" >
+         OR user_login_time like concat(concat('%',#{param1.userLoginTime,jdbcType=TIMESTAMP}),'%')
+      </if>
+      <if test="param1.userStatus != null and param1.userStatus != ''" >
+        OR user_status= #{param1.userStatus,jdbcType=INTEGER}
+      </if>
+      <if test="param1.id == null and param1.userId == null and param1.userName == null and param1.userPassword == null and param1.userSalt == null and param1.userLoginTime == null and param1.userStatus == null" >
+        AND 1=0
+      </if>
+    </trim>
+    <if test="null != param2.offset and 0 != param2.offset" >
+      limit #{param2.index,jdbcType=INTEGER},#{param2.offset,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectBySearchKeyAnd" resultMap="BaseResultMap" parameterType="com.mengyan.xin.dal.model.user.UserLoginDO" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+    <trim prefix="WHERE" prefixOverrides="AND" >
+      <if test="param1.id != null and param1.id != ''" >
+        AND id= #{param1.id,jdbcType=INTEGER}
+      </if>
+      <if test="param1.userId != null and param1.userId != ''" >
+         AND user_id like concat(concat('%',#{param1.userId,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userName != null and param1.userName != ''" >
+         AND user_name like concat(concat('%',#{param1.userName,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userPassword != null and param1.userPassword != ''" >
+         AND user_password like concat(concat('%',#{param1.userPassword,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userSalt != null and param1.userSalt != ''" >
+         AND user_salt like concat(concat('%',#{param1.userSalt,jdbcType=VARCHAR}),'%')
+      </if>
+      <if test="param1.userLoginTime != null and param1.userLoginTime != ''" >
+         AND user_login_time like concat(concat('%',#{param1.userLoginTime,jdbcType=TIMESTAMP}),'%')
+      </if>
+      <if test="param1.userStatus != null and param1.userStatus != ''" >
+        AND user_status= #{param1.userStatus,jdbcType=INTEGER}
+      </if>
+      <if test="param1.id == null and param1.userId == null and param1.userName == null and param1.userPassword == null and param1.userSalt == null and param1.userLoginTime == null and param1.userStatus == null" >
+        AND 1=0
+      </if>
+    </trim>
+    <if test="null != param2.offset and 0 != param2.offset" >
+      limit #{param2.index,jdbcType=INTEGER},#{param2.offset,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" >
+    select id, user_id, user_name, user_password, user_salt, user_login_time, user_status
+    from user_login
+    where
+    <choose >
+      <when test="'id' == param2.key" >
+        id=#{param1.id,jdbcType=INTEGER}
+      </when>
+      <when test="'userId' == param2.key" >
+        user_id=#{param1.userId,jdbcType=VARCHAR}
+      </when>
+      <when test="'userName' == param2.key" >
+        user_name=#{param1.userName,jdbcType=VARCHAR}
+      </when>
+      <when test="'userPassword' == param2.key" >
+        user_password=#{param1.userPassword,jdbcType=VARCHAR}
+      </when>
+      <when test="'userSalt' == param2.key" >
+        user_salt=#{param1.userSalt,jdbcType=VARCHAR}
+      </when>
+      <when test="'userLoginTime' == param2.key" >
+        user_login_time=#{param1.userLoginTime,jdbcType=TIMESTAMP}
+      </when>
+      <when test="'userStatus' == param2.key" >
+        user_status=#{param1.userStatus,jdbcType=INTEGER}
+      </when>
+      <otherwise >
+        1=0
+      </otherwise>
+    </choose>
+    <if test="null != param2.offset and 0 != param2.offset" >
+      limit #{param2.index,jdbcType=INTEGER},#{param2.offset,jdbcType=INTEGER}
+    </if>
+  </select>
+  <update id="updateByKey" >
+    update user_login
+    <trim prefix="set" suffixOverrides="," >
+      <if test="param1.id != null and param2.key != 'id'" >
+        id=#{param1.id,jdbcType=INTEGER},
+      </if>
+      <if test="param1.userId != null and param2.key != 'userId'" >
+        user_id=#{param1.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="param1.userName != null and param2.key != 'userName'" >
+        user_name=#{param1.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="param1.userPassword != null and param2.key != 'userPassword'" >
+        user_password=#{param1.userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="param1.userSalt != null and param2.key != 'userSalt'" >
+        user_salt=#{param1.userSalt,jdbcType=VARCHAR},
+      </if>
+      <if test="param1.userLoginTime != null and param2.key != 'userLoginTime'" >
+        user_login_time=#{param1.userLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="param1.userStatus != null and param2.key != 'userStatus'" >
+        user_status=#{param1.userStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+    where
+    <choose >
+      <when test="'id' == param2.key" >
+        id=#{param1.id,jdbcType=INTEGER}
+      </when>
+      <when test="'userId' == param2.key" >
+        user_id=#{param1.userId,jdbcType=VARCHAR}
+      </when>
+      <when test="'userName' == param2.key" >
+        user_name=#{param1.userName,jdbcType=VARCHAR}
+      </when>
+      <when test="'userPassword' == param2.key" >
+        user_password=#{param1.userPassword,jdbcType=VARCHAR}
+      </when>
+      <when test="'userSalt' == param2.key" >
+        user_salt=#{param1.userSalt,jdbcType=VARCHAR}
+      </when>
+      <when test="'userLoginTime' == param2.key" >
+        user_login_time=#{param1.userLoginTime,jdbcType=TIMESTAMP}
+      </when>
+      <when test="'userStatus' == param2.key" >
+        user_status=#{param1.userStatus,jdbcType=INTEGER}
+      </when>
+      <otherwise >
+        1=0
+      </otherwise>
+    </choose>
+  </update>
+</mapper>

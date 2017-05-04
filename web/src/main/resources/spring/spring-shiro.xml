@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean>
+
+    <bean id="orLogicalRolesFilter" class="com.mengyan.xin.shiro.filter.ORLogicalRolesFilter"/>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--override these for application-specific URLs if you like:-->
+        <!--没有登录-->
+        <property name="loginUrl" value="/login"/>
+        <!--登录成功-->
+        <property name="successUrl" value="/manage"/>
+        <!--登陆了但是访问了未授权的资源-->
+        <property name="unauthorizedUrl" value="/manage"/>
+        <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
+        <!-- defined will be automatically acquired and available via its beanName in chain        -->
+        <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
+        <property name="filters">
+            <map>
+                <entry key="hasOneRole" value-ref="orLogicalRolesFilter"/>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                <!--Common Contorl-->
+                ${env.shiro.begin}/bug/** = authc${env.shiro.end}
+                ${env.shiro.begin}/user/** = authc${env.shiro.end}
+                ${env.shiro.begin}/platform/** = authc${env.shiro.end}
+                ${env.shiro.begin}/manage/** = authc${env.shiro.end}
+                <!--UserWrite-->
+                ${env.shiro.begin}/user/**/insert = authc, hasOneRole[su,admin], perms[user:write]${env.shiro.end}
+                ${env.shiro.begin}/user/**/delete = authc, hasOneRole[su,admin], perms[user:write]${env.shiro.end}
+                ${env.shiro.begin}/user/**/update = authc, hasOneRole[su,admin], perms[user:write]${env.shiro.end}
+                ${env.shiro.begin}/user/**/select = authc, hasOneRole[su,admin], perms[user:write]${env.shiro.end}
+            </value>
+        </property>
+    </bean>
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="sampleRealm"/>
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+    </bean>
+
+    <bean id="sessionGenerate" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+        <property name="sessionIdGenerator" ref="sessionGenerate"/>
+    </bean>
+
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="1800000"/>
+        <property name="name" value="shiroKey"/>
+    </bean>
+
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+        <property name="interval" value="1800000"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="globalSessionTimeout" value="1800000"/>
+    </bean>
+
+    <bean id="sha512Matcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="SHA-512"/>
+        <property name="hashIterations" value="2"/>
+    </bean>
+
+    <bean id="sampleRealm" class="org.apache.shiro.realm.jdbc.JdbcRealm">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="authenticationQuery" value="SELECT password, salt FROM o_users WHERE username = ?"/>
+        <property name="userRolesQuery" value="SELECT o_user_role.role_name FROM o_user_role INNER JOIN o_users ON o_user_role.role_id = o_users.user_role WHERE o_users.username = ?"/>
+        <property name="permissionsQuery" value="SELECT o_user_permission.permission FROM o_user_permission INNER JOIN o_user_role ON o_user_permission.perm_id = o_user_role.role_permission WHERE o_user_role.role_name = ?"/>
+        <property name="permissionsLookupEnabled" value="true"/>
+        <property name="saltStyle" value="COLUMN"/>
+        <property name="credentialsMatcher" ref="sha512Matcher"/>
+    </bean>
+
+    <bean id="secureRandomNumberGenerate" class="org.apache.shiro.crypto.SecureRandomNumberGenerator">
+        <property name="defaultNextBytesSize" value="5"/>
+    </bean>
+
+
+</beans>

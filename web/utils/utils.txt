@@ -1,0 +1,4 @@
+忽略单元测试执行install
+install -Dmaven.test.skip=true
+mysql update全表无where
+sql_safe_updates=0
